@@ -1,0 +1,106 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.23.5",
+    "script_metadata_hash": null
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "1d0db38904205bec4d6f6f6a1f6cec3e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "95744849337645ce8fbdb2c0061eec3a",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"a2-listening-and-accepting-connections-observations\">A2 \u2014 Listening and Accepting Connections: Observations</h1>\n<span class=\"paragraph\">Server-side code lives in <code>../kvstore/server.py</code>. This notebook is for connecting clients and observing what happens.</span>\n<span class=\"paragraph\"><strong>BUILD (from curriculum):</strong> Extend A1 with <code>listen(backlog=5)</code> and <code>accept()</code>. Print the client address when a connection arrives. Test by connecting from a separate process.</span>\n<span class=\"paragraph\"><strong>Workflow:</strong> start your server in a terminal (<code>python kvstore/server.py</code>), then run cells here to connect to it.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "6a2166423e7c26179e17ecdde46b17b7",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"1-single-client-connection\">1. Single client connection</h2>\n<span class=\"paragraph\">Expected: the server prints the client's address (something like <code>('127.0.0.1', 54321)</code>). Note the client port is ephemeral \u2014 the kernel picked it for you because you didn't <code>bind()</code> on the client side.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "47cdd7b71b1beadf4c734b58a1539820",
+      "outputs": [
+        {
+          "type": "error",
+          "ename": "exception",
+          "evalue": "[Errno 61] Connection refused",
+          "traceback": null
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "<span class=\"codehilite\"><div class=\"highlight\"><pre><span></span><span class=\"gt\">Traceback (most recent call last):</span>\n  File <span class=\"nb\">&quot;/var/folders/9_/cwnvghr16pv8c0128g1wdgb00000gn/T/marimo_11389/__marimo__cell_bkHC_.py&quot;</span>, line <span class=\"m\">8</span>, in <span class=\"n\">&lt;module&gt;</span>\n<span class=\"w\">    </span><span class=\"n\">socketClient</span><span class=\"p\">(</span><span class=\"n\">HOSTNAME</span><span class=\"p\">,</span> <span class=\"n\">PORT</span><span class=\"p\">)</span>\n<span class=\"w\">    </span><span class=\"pm\">~~~~~~~~~~~~^^^^^^^^^^^^^^^^</span>\n  File <span class=\"nb\">&quot;/var/folders/9_/cwnvghr16pv8c0128g1wdgb00000gn/T/marimo_11389/__marimo__cell_bkHC_.py&quot;</span>, line <span class=\"m\">6</span>, in <span class=\"n\">socketClient</span>\n<span class=\"w\">    </span><span class=\"n\">tcp_socket</span><span class=\"o\">.</span><span class=\"n\">connect</span><span class=\"p\">((</span><span class=\"n\">hostname</span><span class=\"p\">,</span> <span class=\"n\">port</span><span class=\"p\">))</span>\n<span class=\"w\">    </span><span class=\"pm\">~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^</span>\n<span class=\"gr\">ConnectionRefusedError</span>: <span class=\"n\">[Errno 61] Connection refused</span>\n</pre></div>\n</span>",
+          "mimetype": "application/vnd.marimo+traceback"
+        }
+      ]
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "109b0710c9b72308915c60c4ee191cc3",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"2-rapid-multiple-clients\">2. Rapid multiple clients</h2>\n<span class=\"paragraph\">Open 3 client connections in quick succession. The server, looping on <code>accept()</code>, dequeues them one at a time. The kernel holds any that arrive while the server is busy elsewhere \u2014 that's the <strong>backlog queue</strong>.</span>\n<span class=\"paragraph\">Expected: all 3 connect successfully and the server logs three addresses. Note the client ports \u2014 each is different (different ephemeral port per process/socket).</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "PKri",
+      "code_hash": "5a55b8f9eab48540d73dbf7eac13fa36",
+      "outputs": [],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "c3b0a62e12e12bbc6d6a551a20da521e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"3-overflow-the-backlog-optional\">3. Overflow the backlog (optional)</h2>\n<span class=\"paragraph\">To see what happens when the backlog fills up, modify your server to <em>not</em> call <code>accept()</code> (or sleep before calling it). Then try to open more than <code>backlog</code> connections from here.</span>\n<span class=\"paragraph\">Expected behavior is OS-dependent: on macOS/Linux, additional connections may be silently dropped or refused once the queue is full. The exact symptom varies. Note what you actually observe.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "16f9da6576274a9f8fe0475520e03e1b",
+      "outputs": [],
+      "console": []
+    }
+  ]
+}

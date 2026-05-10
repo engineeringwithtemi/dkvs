@@ -1,0 +1,147 @@
+{
+  "version": "1",
+  "metadata": {
+    "marimo_version": "0.23.5",
+    "script_metadata_hash": null
+  },
+  "cells": [
+    {
+      "id": "Hbol",
+      "code_hash": "1d0db38904205bec4d6f6f6a1f6cec3e",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "MJUe",
+      "code_hash": "76e2e96d166c6d64a63bac27866323df",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h1 id=\"a1-socket-creation-and-binding-observations\">A1 \u2014 Socket Creation and Binding: Observations</h1>\n<span class=\"paragraph\">Throwaway experiments for topic A1. The growing system code lives in <code>../kvstore/server.py</code>. This notebook is for observing kernel/OS behavior.</span>\n<span class=\"paragraph\"><strong>BUILD (from curriculum):</strong> Create a Python script that (1) creates a TCP socket, (2) binds it to localhost on a port, (3) prints the FD. Then try binding two sockets to the same port. Then try binding to port 0.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "vblA",
+      "code_hash": "1c7c7d10da2ec4cbd6ef9f51fe4c1dc2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"1-create-a-tcp-socket-bind-it-to-localhost-print-the-fd\">1. Create a TCP socket, bind it to localhost, print the FD</h2>\n<span class=\"paragraph\">Expected: an integer file descriptor (probably small, e.g. 4\u201310). Note that the FD belongs to <em>this process</em> \u2014 another process would get its own numbering.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "bkHC",
+      "code_hash": "fb6856ad0b5ae2ce7fd7cead85913e48",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "lEQa",
+      "code_hash": "bb31f28d41a4b6d245cda903a9732516",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "File descriptor: 40 \nPort: ('127.0.0.1', 2236)\nClosing socket\n",
+          "mimetype": "text/plain"
+        }
+      ]
+    },
+    {
+      "id": "PKri",
+      "code_hash": "9da134c5c35d62c102af796e7664bff2",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"2-bind-two-sockets-to-the-same-port-observe-the-error\">2. Bind two sockets to the same port \u2014 observe the error</h2>\n<span class=\"paragraph\">Expected: the second <code>bind()</code> raises <code>OSError: [Errno 48] Address already in use</code> (Errno 98 on Linux). Record the exact errno + message you see.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "Xref",
+      "code_hash": "c056157b4f2c0073bd2fc70695784369",
+      "outputs": [
+        {
+          "type": "error",
+          "ename": "exception",
+          "evalue": "[Errno 48] Address already in use",
+          "traceback": null
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stderr",
+          "text": "<span class=\"codehilite\"><div class=\"highlight\"><pre><span></span><span class=\"gt\">Traceback (most recent call last):</span>\n  File <span class=\"nb\">&quot;/var/folders/9_/cwnvghr16pv8c0128g1wdgb00000gn/T/marimo_10760/__marimo__cell_Xref_.py&quot;</span>, line <span class=\"m\">2</span>, in <span class=\"n\">&lt;module&gt;</span>\n<span class=\"w\">    </span><span class=\"n\">second_socket</span> <span class=\"o\">=</span> <span class=\"n\">create_tcp_socket</span><span class=\"p\">(</span><span class=\"mi\">2237</span><span class=\"p\">)</span>\n  File <span class=\"nb\">&quot;/var/folders/9_/cwnvghr16pv8c0128g1wdgb00000gn/T/marimo_10760/__marimo__cell_bkHC_.py&quot;</span>, line <span class=\"m\">5</span>, in <span class=\"n\">create_tcp_socket</span>\n<span class=\"w\">    </span><span class=\"n\">tcp_socket</span><span class=\"o\">.</span><span class=\"n\">bind</span><span class=\"p\">((</span><span class=\"s2\">&quot;localhost&quot;</span><span class=\"p\">,</span> <span class=\"n\">port</span><span class=\"p\">))</span>\n<span class=\"w\">    </span><span class=\"pm\">~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^</span>\n<span class=\"gr\">OSError</span>: <span class=\"n\">[Errno 48] Address already in use</span>\n</pre></div>\n</span>",
+          "mimetype": "application/vnd.marimo+traceback"
+        }
+      ]
+    },
+    {
+      "id": "SFPL",
+      "code_hash": "02da45cb3a5b8ec8ea443d59b986a23b",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/markdown": "<span class=\"markdown prose dark:prose-invert contents\"><h2 id=\"3-bind-to-port-0-observe-the-os-assigned-port\">3. Bind to port 0 \u2014 observe the OS-assigned port</h2>\n<span class=\"paragraph\">Expected: <code>getsockname()</code> after <code>bind(('localhost', 0))</code> returns a port the OS chose for you, typically in the ephemeral range (49152\u201365535 on macOS, 32768\u201360999 on Linux). Run a few times and note that the port differs.</span></span>"
+          }
+        }
+      ],
+      "console": []
+    },
+    {
+      "id": "BYtC",
+      "code_hash": "2021c02cc44ce4bcdf66da89f45d0b84",
+      "outputs": [
+        {
+          "type": "data",
+          "data": {
+            "text/plain": ""
+          }
+        }
+      ],
+      "console": [
+        {
+          "type": "stream",
+          "name": "stdout",
+          "text": "File descriptor: 45 \nPort: ('127.0.0.1', 51553)\n",
+          "mimetype": "text/plain"
+        }
+      ]
+    }
+  ]
+}
