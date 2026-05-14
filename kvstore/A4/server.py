@@ -9,31 +9,44 @@ PORT = 65432
 buffer = b""
 def createTCPSocket(hostname, port):
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_socket:
+    tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tcp_socket.bind((hostname, port))
     tcp_socket.listen(2)
     
     print(f"Waiting for connection")
 
     conn, address = tcp_socket.accept()
-    with True:
-      msg = recv_line(conn)
-      print(f"Connected: {address}")
-      print(f"Received message {msg}")
+    buffer = bytearray()
+    print(f"Connected: {address}")
 
-def recv_line(soc: socket.socket):
-  stop = False
-  while not stop:
-    buffer += soc.recv(1024)
-    temp_bytes = b""
-    for char in buffer:
-      if char == "\n":
-        stop = True
-        break
-      else:
-        temp_bytes += char
-    buffer = buffer[len(temp_bytes)+2:]
-  return temp_bytes
+    with conn:
+      while True:
+        line = recv_line(conn, buffer)
+        if line is None:
+          print(f'Peer closed connection')
+          break
+        print(f"Echoing {line!r} back to {address}")
+        conn.send(line + b'\n')
+        
 
+def recv_line(soc: socket.socket, buffer:bytearray):
+  while True:
+    new_line = buffer.find(b'\n')
+
+    if new_line != -1:
+      result = buffer[:new_line]
+      del buffer[:new_line+1]
+      return bytes(result)
+    
+    data = soc.recv(1024)
+
+    if not data:
+      if buffer:
+        buffer.clear()
+      return None
+
+    buffer.extend(data)
+  
 
 def closeSocket(socket: socket):
   print("Closing socket")
@@ -46,4 +59,4 @@ if __name__ == "__main__":
   parser.add_argument("--hostname", type=str, default="localhost")
   args = parser.parse_args()
 
-  createTCPSocket(args.hostname, args.port)
+  createTCPSocket(HOST, PORT)
